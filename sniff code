@@ -1,0 +1,20 @@
+#include <IRremote.h>
+
+const int RECV_PIN = 11;  // IR receiver connected here
+
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup() {
+  Serial.begin(9600);
+  irrecv.enableIRIn();  // Start the receiver
+  Serial.println("IR Sniffer Ready. Press buttons on your remote.");
+}
+
+void loop() {
+  if (irrecv.decode(&results)) {
+    Serial.print("IR Code: 0x");
+    Serial.println(results.value, HEX);
+    irrecv.resume();  // Receive the next value
+  }
+}
