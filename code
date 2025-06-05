@@ -1,0 +1,67 @@
+#include <Servo.h>
+#include <IRremote.h>
+
+#define BASE_SERVO_PIN 7
+#define MID_SERVO_PIN 6
+#define GRIPPER_SERVO_PIN 5
+#define IR_PIN 2
+#define LED_PIN 8
+
+const unsigned long baseLeft = 0xFF42BD
+;
+const unsigned long baseRight = 0xFF52AD;
+const unsigned long midRight = 0xFF10EF;
+const unsigned long midLeft = 0xFF5AA5;
+const unsigned long gripperClockwise = 0xFF7A85;
+const unsigned long gripperAnticlockwise = 0xFF30CF;
+
+Servo baseServo, midServo, gripperServo;
+IRrecv irrecv(IR_PIN);
+decode_results results;
+int baseAngle = 90, midAngle = 90, gripperAngle = 90;
+
+void setup() {
+  baseServo.attach(BASE_SERVO_PIN);
+  midServo.attach(MID_SERVO_PIN);
+  gripperServo.attach(GRIPPER_SERVO_PIN);
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  baseServo.write(baseAngle);
+  midServo.write(midAngle);
+  gripperServo.write(gripperAngle);
+}
+
+void loop() {
+  if (irrecv.decode(&results)) {
+    Serial.print("Code: 0x");
+    Serial.println(results.value, HEX);
+    if (results.value == baseLeft) {
+      baseAngle = max(0, baseAngle - 10);
+      glowAndMove(baseServo, baseAngle);
+    } else if (results.value == baseRight) {
+      baseAngle = min(180, baseAngle + 10);
+      glowAndMove(baseServo, baseAngle);
+    } else if (results.value == midRight) {
+      midAngle = min(180, midAngle + 10);
+      glowAndMove(midServo, midAngle);
+    } else if (results.value == midLeft) {
+      midAngle = max(0, midAngle - 10);
+      glowAndMove(midServo, midAngle);
+    } else if (results.value == gripperClockwise) {
+      gripperAngle = min(180, gripperAngle + 10);
+      glowAndMove(gripperServo, gripperAngle);
+    } else if (results.value == gripperAnticlockwise) {
+      gripperAngle = max(0, gripperAngle - 10);
+      glowAndMove(gripperServo, gripperAngle);
+    }
+    irrecv.resume();
+  }
+}
+
+void glowAndMove(Servo &servo, int angle) {
+  digitalWrite(LED_PIN, HIGH);
+  servo.write(angle);
+  delay(200);
+  digitalWrite(LED_PIN, LOW);
+}
