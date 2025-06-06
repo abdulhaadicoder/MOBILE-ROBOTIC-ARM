@@ -9,11 +9,14 @@
 
 const unsigned long baseLeft = "add your ir code here": // use the sniff code to identify your button code and replace "0xFF42BD" and same for all
 ;
-const unsigned long baseRight = "add your ir code here" ;
-const unsigned long midRight = "add your ir code here" ;
-const unsigned long midLeft = "add your ir code here" ;
-const unsigned long gripperClockwise = "add your ir code here" ;
-const unsigned long gripperAnticlockwise = "add your ir code here" ;
+// Replace these placeholders with your actual IR codes (in HEX format, like 0xFFA25D)
+const unsigned long baseLeft = 0xYOUR_CODE_HERE;
+const unsigned long baseRight = 0xYOUR_CODE_HERE;
+const unsigned long midRight = 0xYOUR_CODE_HERE;
+const unsigned long midLeft = 0xYOUR_CODE_HERE;
+const unsigned long gripperClockwise = 0xYOUR_CODE_HERE;
+const unsigned long gripperAnticlockwise = 0xYOUR_CODE_HERE;
+
 
 Servo baseServo, midServo, gripperServo;
 IRrecv irrecv(IR_PIN);
